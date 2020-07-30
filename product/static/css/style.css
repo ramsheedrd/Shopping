@@ -1,0 +1,33 @@
+.category__card__wrapper a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.category__card__img {
+    max-width: 220px;
+    max-height: 250px;
+    min-height: 250px;
+    object-fit: contain;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.category__card__add {
+    width: 220px;
+    height: inherit;
+    color: #adb5bd;
+}
+
+.category__card__add:hover{
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.category__detailed__header{
+    background-color: beige;
+}
+
+.product__main__img{
+    width:inherit;
+    object-fit: contain;
+    padding: 20px;
+}

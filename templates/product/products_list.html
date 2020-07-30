@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Categories
+{% endblock title %}
+    
+{% block content %}
+<div class="container col-sm-10 col-12">
+    <div class="mt-4 d-flex category__card__wrapper flex-wrap">
+    {% for product in products %}
+        <a href="{{ product.get_absolute_url }}" class=" col-4">
+            <div class="card category__card d-flex flex-column align-self-end m-2">
+                <img class="card-img-top category__card__img" src="
+                {% if product.product_images.all %}
+                    {{ product.product_images.all.0.image.url }}
+                {% else %}
+                    {% static 'img/no-image.jpg' %}
+                {% endif %}
+                " alt="">
+                <div class="card-body">
+                    <p class="card-title" >{{ product.product_name }}</p>
+                     {{ product.category }}
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+    

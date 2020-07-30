@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ category.category_name }}
+{% endblock title %}
+    
+{% block content %}
+<div class="d-flex justify-content-between p-3 px-4 align-self-center category__detailed__header">
+    <h4>{{ category.category_name }}</h4>
+    <div>
+        <a href="{% url 'product:category-edit' category.slug %}" class="btn btn-success">Edit</a>
+        <a href="{% url 'product:category-delete' category.slug %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+<div class="container col-sm-10 col-12">
+    <div class="mt-4 d-flex category__card__wrapper">
+    {% for product in category.products.all %}
+        <a href="{{ product.get_absolute_url }}" class=" col-4">
+            <div class="card category__card d-flex flex-column align-self-end m-2">
+                <img class="card-img-top category__card__img" src="
+                {% if product.product_images.all %}
+                    {{ product.product_images.all.0.image.url }}
+                {% else %}
+                    {% static 'img/no-image.jpg' %}
+                {% endif %}
+                " alt="">
+                <div class="card-body">
+                    <p class="card-title" >{{ product.product_name }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+    
