@@ -14,7 +14,7 @@ from .models import (
     ProductImages,
     ProductFeatures
 )
-from .forms import ProductImageForm
+from .forms import ProductImageForm, ProductAddForm
 
 # Create your views here.
 
@@ -60,16 +60,70 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
 
 
-class ProductAddView(CreateView):
+class ProductAddView(View):
     model = Products
-    fields = ['category', 'product_name', 'product_price', 'description']
-    template_name_suffix = '_add_form'
+    template_name = 'product/products_add_form.html'
 
+    def get(self, request):
+        context = {
+            'form_product' : ProductAddForm(),
+            'form_images'  : ProductImageForm()
+        }
+        return render(request, self.template_name, context)
 
-class ProductEditView(UpdateView):
+    def post(self, request):
+        form_product = ProductAddForm(request.POST)
+        form_images  = ProductImageForm(request.POST, request.FILES)
+        if form_product.is_valid() and form_images.is_valid():
+            product = form_product.save()
+            for field in request.FILES.keys():
+                for img in request.FILES.getlist('images'):
+                    instance = ProductImages(product=product, image= img)  # match the model.
+                    instance.save()
+            return redirect(product.get_absolute_url())
+
+        else:
+            context = {
+                'form_product' : form_product,
+                'form_images'  : form_images
+            }
+            return render(request, self.template_name, context)
+        
+
+class ProductEditView(View):
     model = Products
-    fields = ['category', 'product_name', 'product_price', 'description']
-    template_name_suffix = '_edit_form'
+    template_name = 'product/products_edit_form.html'
+
+    def get(self, request, *args, **kwargs):
+        product = get_object_or_404(Products, slug = kwargs.get("slug"))
+        context = {
+            'form_product' : ProductAddForm(instance=product),
+            'form_images'  : ProductImageForm()
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        product = get_object_or_404(Products, slug = kwargs.get("slug"))
+        form_product = ProductAddForm(request.POST, instance=product)
+        form_images  = ProductImageForm(request.POST, request.FILES)
+        if form_product.is_valid() and form_images.is_valid():
+            product = form_product.save()
+
+            # if images need to be replaced
+            # product.product_images.all().delete()   
+
+            for field in request.FILES.keys():
+                for img in request.FILES.getlist('images'):
+                    instance = ProductImages(product=product, image= img)  # match the model.
+                    instance.save()
+            return redirect(product.get_absolute_url())
+
+        else:
+            context = {
+                'form_product' : form_product,
+                'form_images'  : form_images
+            }
+            return render(request, self.template_name, context)
 
 
 class ProductDeleteView(DeleteView):

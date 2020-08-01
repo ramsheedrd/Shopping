@@ -7,6 +7,7 @@ Categories
     
 {% block content %}
 <div class="container col-sm-10 col-12">
+    <h4 class="ml-4 mt-4">All Products</h4>
     <div class="mt-4 d-flex category__card__wrapper flex-wrap">
     {% for product in products %}
         <a href="{{ product.get_absolute_url }}" class=" col-4">
